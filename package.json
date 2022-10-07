@@ -1,12 +1,32 @@
 {
-  "name": "@Nikhil-Muddamsetty/mool",
-  "version": "1.0.0",
+  "name": "@mool-innovation-labs-packages/mool",
+  "version": "1.0.1",
   "description": "Common functionality of mool in a single package to reuse it in different mool projects",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "npx prettier --write ."
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@mool-innovation-labs-packages/mool"
   },
   "keywords": [],
   "author": "Nikhil Muddamsetty",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-spellcheck": "^0.0.19",
+    "husky": "^8.0.1",
+    "prettier": "^2.7.1",
+    "pretty-quick": "^3.1.3"
+  },
+  "dependencies": {
+    "mongodb": "^4.10.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
 }
