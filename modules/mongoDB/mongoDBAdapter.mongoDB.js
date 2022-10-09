@@ -1,15 +1,14 @@
 const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
-const ObjectID = mongodb.ObjectID;
 const response = require("../response/index.response");
-const mongoDBIndexCreator = require("./mongoDBIndexCreator.mongoDB");
+const indexCreator = require("./mongoDBIndexCreator.mongoDB");
 
 class MongoDbAdapter {
   /**
    * Creates an instance of MongoDbAdapter.
    * @param {String} uri
    * @param {Object?} opts
-   * @param {String?} dbName
+   * @param {String?} indexes
    *
    * @memberof MongoDbAdapter
    */
@@ -70,7 +69,7 @@ class MongoDbAdapter {
         );
       })
       .then(() => {
-        mongoDBIndexCreator(this.collection, this.indexes);
+        indexCreator(this.collection, this.indexes);
       })
       .catch((error) =>
         this.service.logger.error("MongoDB uncaught error at adapter.", error)

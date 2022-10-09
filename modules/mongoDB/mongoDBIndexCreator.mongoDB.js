@@ -1,4 +1,14 @@
-module.exports = async function mongoDBIndexCreator(collection, indexes) {
+/**
+ * Custom mongoDB indexCreator.
+ *
+ * call this function to create a new collection or check for existence of an index in the collection.
+ *
+ * @param collection
+ * @param indexes
+ *
+ * It will kill the process if the index creation failed.
+ */
+module.exports = async function indexCreator(collection, indexes) {
   try {
     await Promise.all(
       indexes.map(async (index) => {
