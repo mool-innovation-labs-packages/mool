@@ -132,7 +132,16 @@ class MongoDbAdapter {
   async insertOne(doc = {}, options = {}) {
     try {
       let insertOneData = await this.collection.insertOne(doc, options);
-      return response.success("insertOne successful", insertOneData, 200);
+      if (insertOneData.acknowledged) {
+        return response.success("insertOne successful", insertOneData, 200);
+      } else {
+        return response.success(
+          "insertOne failed",
+          insertOneData,
+          500,
+          "DB-IO-1"
+        );
+      }
     } catch (error) {
       if (error.code === 11000) {
         return response.error(
@@ -141,15 +150,38 @@ class MongoDbAdapter {
           } must be unique`,
           error.keyValue,
           400,
-          "DB-DUPLICATE-FIELD"
+          "DB-IO-DUPLICATE-FIELD"
         );
       }
-      return response.error(
-        "insertOne failed",
-        error,
-        500,
-        "UNCAUGHT-DB-ERROR"
-      );
+      return response.error("insertOne failed", error, 500, "UNCAUGHT-DB-IO");
+    }
+  }
+
+  async insertMany(docs = [], options = {}) {
+    try {
+      let insertManyData = await this.collection.insertMany(docs, options);
+      if (insertManyData.acknowledged) {
+        return response.success("insertMany successful", insertManyData, 200);
+      } else {
+        return response.success(
+          "insertMany failed",
+          insertManyData,
+          500,
+          "DB-IM-1"
+        );
+      }
+    } catch (error) {
+      if (error.code === 11000) {
+        return response.error(
+          `insertMany failed because the field ${
+            Object.keys(error.keyValue)[0]
+          } must be unique`,
+          error.keyValue,
+          400,
+          "DB-IM-DUPLICATE-FIELD"
+        );
+      }
+      return response.error("insertOne failed", error, 500, "UNCAUGHT-DB-IM");
     }
   }
 
