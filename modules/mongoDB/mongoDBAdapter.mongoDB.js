@@ -1,6 +1,6 @@
 const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
-const response = require("../response/index.response");
+const response = require("../response/methods.response");
 const indexCreator = require("./mongoDBIndexCreator.mongoDB");
 
 class MongoDbAdapter {
