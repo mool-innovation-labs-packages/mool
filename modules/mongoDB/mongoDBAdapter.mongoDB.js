@@ -90,9 +90,24 @@ class MongoDbAdapter {
     return Promise.resolve();
   }
 
-  async findOne(query = {}, options = {}) {
+  async findOne(
+    query = {},
+    options = {},
+    projectObject = undefined,
+    fetchAllowedAttributes = undefined,
+    extraAttributesArray = undefined
+  ) {
     try {
-      let findOneData = await this.collection.findOne(query, options);
+      let { skip, limit } = await this.projectionGenerator(
+        projectObject,
+        fetchAllowedAttributes,
+        extraAttributesArray
+      );
+      let findOneData = await this.collection.findOne(query, {
+        skip,
+        limit,
+        ...options,
+      });
       return response.success("findOne successful", findOneData, 200);
     } catch (error) {
       return response.error("FindOne failed", error, 500, "UNCAUGHT-DB-ERROR");
