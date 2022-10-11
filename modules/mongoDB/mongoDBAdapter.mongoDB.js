@@ -2,6 +2,7 @@ const mongodb = require("mongodb");
 const MongoClient = mongodb.MongoClient;
 const response = require("../response/methods.response");
 const indexCreator = require("./mongoDBIndexCreator.mongoDB");
+const utils = require("../utils/index.utils");
 
 class MongoDbAdapter {
   /**
@@ -98,7 +99,7 @@ class MongoDbAdapter {
     extraAttributesArray = undefined
   ) {
     try {
-      let { skip, limit } = await this.projectionGenerator(
+      let { skip, limit } = await utils.projectionGenerator(
         projectObject,
         fetchAllowedAttributes,
         extraAttributesArray
@@ -124,7 +125,7 @@ class MongoDbAdapter {
     pageNumber = undefined
   ) {
     try {
-      let { skip, limit } = await this.projectionAndPagePropsGenerator(
+      let { skip, limit } = await utils.projectionAndPagePropsGenerator(
         projectObject,
         fetchAllowedAttributes,
         extraAttributesArray,
