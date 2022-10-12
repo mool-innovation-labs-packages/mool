@@ -25,7 +25,7 @@ module.exports = {
       items: { type: "string", empty: false },
       optional: true,
     },
-    objectID: { type: "objectID", ObjectID },
+    objectID: { type: "objectID", ObjectID, convert: true },
     monthNumber: { type: "number", convert: true, min: 0, max: 11 },
     PAN: {
       type: "string",
@@ -43,7 +43,22 @@ module.exports = {
       type: "string",
       pattern: "[2-9]{1}[0-9]{3}s[0-9]{4}s[0-9]{4}",
     },
-    pageNumber: { type: "number", optional: true, convert: true },
-    pageSize: { type: "number", optional: true, convert: true },
+    pageNumber: {
+      type: "number",
+      convert: true,
+      positive: true,
+      integer: true,
+    },
+    pageSize: {
+      type: "number",
+      convert: true,
+      positive: true,
+      integer: true,
+      max: 100,
+    },
+    fields: [
+      { type: "string", optional: true },
+      { type: "array", item: "string", optional: true },
+    ],
   },
 };
