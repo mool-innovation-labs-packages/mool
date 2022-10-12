@@ -1,23 +1,23 @@
 module.exports = async function projectionGenerator(
-  projectObject = undefined,
+  projectionObject = undefined,
   fetchAllowedAttributes = undefined,
-  extraAttributesArray = undefined
+  fieldsArray = undefined
 ) {
-  let project = projectObject ? projectObject : { _id: 1 };
+  let projection = projectionObject ? projectionObject : { _id: 1 };
 
-  if (!projectObject) {
-    if (extraAttributesArray !== undefined) {
-      if (typeof extraAttributesArray === "string") {
-        extraAttributesArray = [extraAttributesArray];
+  if (!projectionObject) {
+    if (fieldsArray !== undefined) {
+      if (typeof fieldsArray === "string") {
+        fieldsArray = [fieldsArray];
       }
 
-      extraAttributesArray.map((attributeName) => {
+      fieldsArray.map((attributeName) => {
         if (Object.hasOwn(fetchAllowedAttributes, attributeName)) {
-          project[fetchAllowedAttributes[attributeName]] = 1;
+          projection[fetchAllowedAttributes[attributeName]] = 1;
         }
       });
     }
   }
 
-  return { project };
+  return { projection };
 };
