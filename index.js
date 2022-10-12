@@ -3,8 +3,13 @@ const validationRules =
 const mongoDB = require("./modules/mongoDB/index.mongoDB");
 const response = require("./modules/response/index.response");
 const utils = require("./modules/utils/index.utils");
+const moleculer = require("./modules/moleculer/index.moleculer");
 
 const exportObject = {
+  /**
+   *  Moleculer's provided libraries modified for mool applications.
+   */
+  moleculer,
   /**
    * Custom validation rules for commonly used fields in the mool applications.
    */
