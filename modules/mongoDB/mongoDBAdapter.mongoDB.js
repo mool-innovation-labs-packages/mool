@@ -94,13 +94,13 @@ class MongoDbAdapter {
   async findOne(
     query = {},
     options = {},
-    projectObject = undefined,
+    projectionObject = undefined,
     fetchAllowedAttributes = undefined,
     fieldsArray = undefined
   ) {
     try {
       let { skip, limit, projection } = await utils.projectionGenerator(
-        projectObject,
+        projectionObject,
         fetchAllowedAttributes,
         fieldsArray
       );
@@ -119,7 +119,7 @@ class MongoDbAdapter {
   async find(
     query = {},
     options = {},
-    projectObject = undefined,
+    projectionObject = undefined,
     fetchAllowedAttributes = undefined,
     fieldsArray = undefined,
     pageSize = undefined,
@@ -128,7 +128,7 @@ class MongoDbAdapter {
     try {
       let { projection, skip, limit } =
         await utils.projectionAndPagePropsGenerator(
-          projectObject,
+          projectionObject,
           fetchAllowedAttributes,
           fieldsArray,
           pageSize,
