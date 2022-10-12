@@ -1,6 +1,6 @@
 {
   "name": "@mool-innovation-labs-packages/mool",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Common functionality of mool in a single package to reuse it in different mool projects",
   "main": "index.js",
   "scripts": {
