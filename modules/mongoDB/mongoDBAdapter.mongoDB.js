@@ -91,6 +91,15 @@ class MongoDbAdapter {
     return Promise.resolve();
   }
 
+  /**
+   *
+   * @param query
+   * @param options
+   * @param projectionObject
+   * @param fetchAllowedAttributes
+   * @param fieldsArray
+   * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
+   */
   async findOne(
     query = {},
     options = {},
@@ -112,10 +121,29 @@ class MongoDbAdapter {
       });
       return response.success("findOne successful", findOneData, 200);
     } catch (error) {
-      return response.error("FindOne failed", error, 500, "UNCAUGHT-DB-ERROR");
+      if (error.code === 31249) {
+        return response.error(
+          `find failed because a parent field and its child field where requested together in the field('f') query. `,
+          null,
+          400,
+          "DB-FO-PATH-COLLISION"
+        );
+      }
+      return response.error("FindOne failed", error, 500, "UNCAUGHT-DB-FO");
     }
   }
 
+  /**
+   *
+   * @param query
+   * @param options
+   * @param projectionObject
+   * @param fetchAllowedAttributes
+   * @param fieldsArray
+   * @param pageSize
+   * @param pageNumber
+   * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
+   */
   async find(
     query = {},
     options = {},
@@ -144,10 +172,24 @@ class MongoDbAdapter {
         .toArray();
       return response.success("find successful", findData, 200);
     } catch (error) {
-      return response.error("find failed", error, 500, "UNCAUGHT-DB-ERROR");
+      if (error.code === 31249) {
+        return response.error(
+          `find failed because a parent field and its child field where requested together in the field('f') query. `,
+          error.keyValue,
+          400,
+          "DB-FI-PATH-COLLISION"
+        );
+      }
+      return response.error("find failed", error, 500, "UNCAUGHT-DB-FI");
     }
   }
 
+  /**
+   *
+   * @param doc
+   * @param options
+   * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
+   */
   async insertOne(doc = {}, options = {}) {
     try {
       let insertOneData = await this.collection.insertOne(doc, options);
@@ -176,6 +218,12 @@ class MongoDbAdapter {
     }
   }
 
+  /**
+   *
+   * @param docs
+   * @param options
+   * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
+   */
   async insertMany(docs = [], options = {}) {
     try {
       let insertManyData = await this.collection.insertMany(docs, options);
@@ -204,6 +252,13 @@ class MongoDbAdapter {
     }
   }
 
+  /**
+   *
+   * @param filter
+   * @param updateFilter
+   * @param options
+   * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
+   */
   async updateOne(filter = {}, updateFilter = {}, options = {}) {
     try {
       let updateOneData = await this.collection.updateOne(
@@ -236,6 +291,13 @@ class MongoDbAdapter {
     }
   }
 
+  /**
+   *
+   * @param filter
+   * @param updateFilter
+   * @param options
+   * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
+   */
   async updateMany(filter = {}, updateFilter = {}, options = {}) {
     try {
       let updateManyData = await this.collection.updateMany(
@@ -268,6 +330,12 @@ class MongoDbAdapter {
     }
   }
 
+  /**
+   *
+   * @param filter
+   * @param options
+   * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
+   */
   async deleteOne(filter = {}, options = {}) {
     try {
       let deleteOneData = await this.collection.deleteOne(filter, options);
@@ -296,6 +364,12 @@ class MongoDbAdapter {
     }
   }
 
+  /**
+   *
+   * @param filter
+   * @param options
+   * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
+   */
   async deleteMany(filter = {}, options = {}) {
     try {
       let deleteManyData = await this.collection.deleteMany(filter, options);
