@@ -1,21 +1,21 @@
 module.exports = async function projectionAndPagePropsGenerator(
-  projectObject = undefined,
+  projectionObject = undefined,
   fetchAllowedAttributes = undefined,
-  extraAttributesArray = undefined,
+  fieldsArray = undefined,
   pageSize = undefined,
   pageNumber = undefined
 ) {
-  let project = projectObject ? projectObject : { _id: 1 };
+  let projection = projectionObject ? projectionObject : { _id: 1 };
 
-  if (!projectObject) {
-    if (extraAttributesArray !== undefined) {
-      if (typeof extraAttributesArray === "string") {
-        extraAttributesArray = [extraAttributesArray];
+  if (!projectionObject) {
+    if (fieldsArray !== undefined) {
+      if (typeof fieldsArray === "string") {
+        fieldsArray = [fieldsArray];
       }
 
-      extraAttributesArray.map((attributeName) => {
+      fieldsArray.map((attributeName) => {
         if (Object.hasOwn(fetchAllowedAttributes, attributeName)) {
-          project[fetchAllowedAttributes[attributeName]] = 1;
+          projection[fetchAllowedAttributes[attributeName]] = 1;
         }
       });
     }
@@ -25,9 +25,9 @@ module.exports = async function projectionAndPagePropsGenerator(
   let skip = 0;
 
   if (pageSize && pageNumber) {
-    limit = Number(pageSize);
-    skip = pageNumber * pageSize;
+    limit = pageSize;
+    skip = (pageNumber - 1) * pageSize;
   }
 
-  return { project, limit, skip };
+  return { projection, limit, skip };
 };
