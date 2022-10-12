@@ -96,15 +96,16 @@ class MongoDbAdapter {
     options = {},
     projectObject = undefined,
     fetchAllowedAttributes = undefined,
-    extraAttributesArray = undefined
+    fieldsArray = undefined
   ) {
     try {
-      let { skip, limit } = await utils.projectionGenerator(
+      let { skip, limit, projection } = await utils.projectionGenerator(
         projectObject,
         fetchAllowedAttributes,
-        extraAttributesArray
+        fieldsArray
       );
       let findOneData = await this.collection.findOne(query, {
+        projection,
         skip,
         limit,
         ...options,
@@ -120,20 +121,22 @@ class MongoDbAdapter {
     options = {},
     projectObject = undefined,
     fetchAllowedAttributes = undefined,
-    extraAttributesArray = undefined,
+    fieldsArray = undefined,
     pageSize = undefined,
     pageNumber = undefined
   ) {
     try {
-      let { skip, limit } = await utils.projectionAndPagePropsGenerator(
-        projectObject,
-        fetchAllowedAttributes,
-        extraAttributesArray,
-        pageSize,
-        pageNumber
-      );
+      let { projection, skip, limit } =
+        await utils.projectionAndPagePropsGenerator(
+          projectObject,
+          fetchAllowedAttributes,
+          fieldsArray,
+          pageSize,
+          pageNumber
+        );
       let findData = await this.collection
         .find(query, {
+          projection,
           skip,
           limit,
           ...options,
