@@ -268,7 +268,7 @@ class MongoDbAdapter {
       );
       if (
         findOneAndReplaceData.ok &&
-        findOneAndReplaceData.lastErrorObject.n === 1
+        findOneAndReplaceData.lastErrorObject?.n === 1
       ) {
         return response.success(
           "findOneAndReplace successful",
@@ -391,7 +391,7 @@ class MongoDbAdapter {
       );
       if (
         findOneAndDeleteData.ok &&
-        findOneAndDeleteData.lastErrorObject.n === 1
+        findOneAndDeleteData.lastErrorObject?.n === 1
       ) {
         return response.success(
           "findOneAndDelete successful",
