@@ -196,7 +196,7 @@ class MongoDbAdapter {
       if (insertOneData.acknowledged) {
         return response.success("insertOne successful", insertOneData, 200);
       } else {
-        return response.success(
+        return response.error(
           "insertOne failed",
           insertOneData,
           500,
@@ -230,7 +230,7 @@ class MongoDbAdapter {
       if (insertManyData.acknowledged) {
         return response.success("insertMany successful", insertManyData, 200);
       } else {
-        return response.success(
+        return response.error(
           "insertMany failed",
           insertManyData,
           500,
@@ -266,10 +266,15 @@ class MongoDbAdapter {
         updateFilter,
         options
       );
-      if (updateOneData.acknowledged) {
+      if (
+        updateOneData.acknowledged &&
+        ((updateOneData.matchedCount === 1 &&
+          updateOneData.modifiedCount === 1) ||
+          updateOneData.upsertedCount === 1)
+      ) {
         return response.success("updateOne successful", updateOneData, 200);
       } else {
-        return response.success(
+        return response.error(
           "updateOne failed",
           updateOneData,
           500,
@@ -305,16 +310,7 @@ class MongoDbAdapter {
         updateFilter,
         options
       );
-      if (updateManyData.acknowledged) {
-        return response.success("updateMany successful", updateManyData, 200);
-      } else {
-        return response.success(
-          "updateMany failed",
-          updateManyData,
-          500,
-          "DB-UM-1"
-        );
-      }
+      return response.success("updateMany successful", updateManyData, 200);
     } catch (error) {
       if (error.code === 11000) {
         return response.error(
@@ -339,10 +335,10 @@ class MongoDbAdapter {
   async deleteOne(filter = {}, options = {}) {
     try {
       let deleteOneData = await this.collection.deleteOne(filter, options);
-      if (deleteOneData.acknowledged) {
+      if (deleteOneData.acknowledged && deleteOneData.deletedCount === 1) {
         return response.success("deleteOne successful", deleteOneData, 200);
       } else {
-        return response.success(
+        return response.error(
           "deleteOne failed",
           deleteOneData,
           500,
@@ -376,7 +372,7 @@ class MongoDbAdapter {
       if (deleteManyData.acknowledged) {
         return response.success("deleteMany successful", deleteManyData, 200);
       } else {
-        return response.success(
+        return response.error(
           "deleteMany failed",
           deleteManyData,
           500,
