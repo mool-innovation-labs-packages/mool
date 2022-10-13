@@ -379,16 +379,6 @@ class MongoDbAdapter {
         );
       }
     } catch (error) {
-      if (error.code === 11000) {
-        return response.error(
-          `deleteOne failed because the field ${
-            Object.keys(error.keyValue)[0]
-          } must be unique`,
-          error.keyValue,
-          400,
-          "DB-DO-DUPLICATE-FIELD"
-        );
-      }
       return response.error("deleteOne failed", error, 500, "UNCAUGHT-DB-DO");
     }
   }
@@ -413,16 +403,6 @@ class MongoDbAdapter {
         );
       }
     } catch (error) {
-      if (error.code === 11000) {
-        return response.error(
-          `deleteMany failed because the field ${
-            Object.keys(error.keyValue)[0]
-          } must be unique`,
-          error.keyValue,
-          400,
-          "DB-DM-DUPLICATE-FIELD"
-        );
-      }
       return response.error("deleteMany failed", error, 500, "UNCAUGHT-DB-DM");
     }
   }
