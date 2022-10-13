@@ -255,6 +255,108 @@ class MongoDbAdapter {
   /**
    *
    * @param filter
+   * @param replacement
+   * @param options
+   * @returns {Promise<{code: undefined, data: null, success: boolean, message: null, timestamp: number}|{code: undefined, data: null, success: boolean, message: null, type: null, timestamp: number}>}
+   */
+  async findOneAndReplace(filter = {}, replacement = {}, options = {}) {
+    try {
+      let findOneAndReplaceData = await this.collection.findOneAndReplace(
+        filter,
+        replacement,
+        options
+      );
+      if (
+        findOneAndReplaceData.ok &&
+        findOneAndReplaceData.lastErrorObject?.n === 1
+      ) {
+        return response.success(
+          "findOneAndReplace successful",
+          findOneAndReplaceData,
+          200
+        );
+      } else {
+        return response.error(
+          "findOneAndReplace failed",
+          findOneAndReplaceData,
+          500,
+          "DB-FOAR-1"
+        );
+      }
+    } catch (error) {
+      if (error.code === 11000) {
+        return response.error(
+          `findOneAndReplace failed because the field ${
+            Object.keys(error.keyValue)[0]
+          } must be unique`,
+          error.keyValue,
+          400,
+          "DB-FOAR-DUPLICATE-FIELD"
+        );
+      }
+      return response.error(
+        "findOneAndReplace failed",
+        error,
+        500,
+        "UNCAUGHT-DB-FOAR"
+      );
+    }
+  }
+
+  /**
+   *
+   * @param filter
+   * @param updateFilter
+   * @param options
+   * @returns {Promise<{code: undefined, data: null, success: boolean, message: null, timestamp: number}|{code: undefined, data: null, success: boolean, message: null, type: null, timestamp: number}>}
+   */
+  async findOneAndUpdate(filter = {}, updateFilter = {}, options = {}) {
+    try {
+      let findOneAndUpdateData = await this.collection.findOneAndUpdate(
+        filter,
+        updateFilter,
+        options
+      );
+      if (
+        findOneAndUpdateData.ok &&
+        findOneAndUpdateData.lastErrorObject?.n === 1
+      ) {
+        return response.success(
+          "findOneAndUpdate successful",
+          findOneAndUpdateData,
+          200
+        );
+      } else {
+        return response.error(
+          "findOneAndUpdate failed",
+          findOneAndUpdateData,
+          500,
+          "DB-FOAU-1"
+        );
+      }
+    } catch (error) {
+      if (error.code === 11000) {
+        return response.error(
+          `findOneAndUpdate failed because the field ${
+            Object.keys(error.keyValue)[0]
+          } must be unique`,
+          error.keyValue,
+          400,
+          "DB-FOAU-DUPLICATE-FIELD"
+        );
+      }
+      return response.error(
+        "findOneAndUpdate failed",
+        error,
+        500,
+        "UNCAUGHT-DB-FOAU"
+      );
+    }
+  }
+
+  /**
+   *
+   * @param filter
    * @param updateFilter
    * @param options
    * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
@@ -330,6 +432,45 @@ class MongoDbAdapter {
    *
    * @param filter
    * @param options
+   * @returns {Promise<{code: undefined, data: null, success: boolean, message: null, timestamp: number}|{code: undefined, data: null, success: boolean, message: null, type: null, timestamp: number}>}
+   */
+  async findOneAndDelete(filter = {}, options = {}) {
+    try {
+      let findOneAndDeleteData = await this.collection.findOneAndDelete(
+        filter,
+        options
+      );
+      if (
+        findOneAndDeleteData.ok &&
+        findOneAndDeleteData.lastErrorObject?.n === 1
+      ) {
+        return response.success(
+          "findOneAndDelete successful",
+          findOneAndDeleteData,
+          200
+        );
+      } else {
+        return response.error(
+          "findOneAndDelete failed",
+          findOneAndDeleteData,
+          500,
+          "DB-FOAD-1"
+        );
+      }
+    } catch (error) {
+      return response.error(
+        "findOneAndDelete failed",
+        error,
+        500,
+        "UNCAUGHT-DB-FOAD"
+      );
+    }
+  }
+
+  /**
+   *
+   * @param filter
+   * @param options
    * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
    */
   async deleteOne(filter = {}, options = {}) {
@@ -346,16 +487,6 @@ class MongoDbAdapter {
         );
       }
     } catch (error) {
-      if (error.code === 11000) {
-        return response.error(
-          `deleteOne failed because the field ${
-            Object.keys(error.keyValue)[0]
-          } must be unique`,
-          error.keyValue,
-          400,
-          "DB-DO-DUPLICATE-FIELD"
-        );
-      }
       return response.error("deleteOne failed", error, 500, "UNCAUGHT-DB-DO");
     }
   }
@@ -380,16 +511,6 @@ class MongoDbAdapter {
         );
       }
     } catch (error) {
-      if (error.code === 11000) {
-        return response.error(
-          `deleteMany failed because the field ${
-            Object.keys(error.keyValue)[0]
-          } must be unique`,
-          error.keyValue,
-          400,
-          "DB-DM-DUPLICATE-FIELD"
-        );
-      }
       return response.error("deleteMany failed", error, 500, "UNCAUGHT-DB-DM");
     }
   }
