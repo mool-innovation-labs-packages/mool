@@ -326,6 +326,39 @@ class MongoDbAdapter {
     }
   }
 
+  async findOneAndDelete(filter = {}, options = {}) {
+    try {
+      let findOneAndDeleteData = await this.collection.findOneAndDelete(
+        filter,
+        options
+      );
+      if (
+        findOneAndDeleteData.ok &&
+        findOneAndDeleteData.lastErrorObject.n === 1
+      ) {
+        return response.success(
+          "findOneAndDelete successful",
+          findOneAndDeleteData,
+          200
+        );
+      } else {
+        return response.error(
+          "findOneAndDelete failed",
+          findOneAndDeleteData,
+          500,
+          "DB-FOAD-1"
+        );
+      }
+    } catch (error) {
+      return response.error(
+        "findOneAndDelete failed",
+        error,
+        500,
+        "UNCAUGHT-DB-FOAD"
+      );
+    }
+  }
+
   /**
    *
    * @param filter
