@@ -308,6 +308,57 @@ class MongoDbAdapter {
    * @param filter
    * @param updateFilter
    * @param options
+   * @returns {Promise<{code: undefined, data: null, success: boolean, message: null, timestamp: number}|{code: undefined, data: null, success: boolean, message: null, type: null, timestamp: number}>}
+   */
+  async findOneAndUpdate(filter = {}, updateFilter = {}, options = {}) {
+    try {
+      let findOneAndUpdateData = await this.collection.findOneAndUpdate(
+        filter,
+        updateFilter,
+        options
+      );
+      if (
+        findOneAndUpdateData.ok &&
+        findOneAndUpdateData.lastErrorObject?.n === 1
+      ) {
+        return response.success(
+          "findOneAndUpdate successful",
+          findOneAndUpdateData,
+          200
+        );
+      } else {
+        return response.error(
+          "findOneAndUpdate failed",
+          findOneAndUpdateData,
+          500,
+          "DB-FOAU-1"
+        );
+      }
+    } catch (error) {
+      if (error.code === 11000) {
+        return response.error(
+          `findOneAndUpdate failed because the field ${
+            Object.keys(error.keyValue)[0]
+          } must be unique`,
+          error.keyValue,
+          400,
+          "DB-FOAU-DUPLICATE-FIELD"
+        );
+      }
+      return response.error(
+        "findOneAndUpdate failed",
+        error,
+        500,
+        "UNCAUGHT-DB-FOAU"
+      );
+    }
+  }
+
+  /**
+   *
+   * @param filter
+   * @param updateFilter
+   * @param options
    * @returns {Promise<{code: *, data: *, success: boolean, message: *, timestamp: number}|{code: *, data: *, success: boolean, message: *, type: *, timestamp: number}>}
    */
   async updateOne(filter = {}, updateFilter = {}, options = {}) {
