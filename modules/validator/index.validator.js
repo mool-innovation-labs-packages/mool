@@ -60,5 +60,27 @@ module.exports = {
       { type: "string", optional: true },
       { type: "array", item: "string", optional: true },
     ],
+    GSTIN: {
+      type: "string",
+      uppercase: true,
+      pattern: "\\d{2}[A-Z]{5}\\d{4}[A-Z]{1}[A-Z\\d]{1}[Z]{1}[A-Z\\d]{1}",
+    },
+    fields: [
+      { type: "string", optional: true },
+      { type: "array", item: "string", optional: true },
+    ],
+    pageNumber: {
+      type: "number",
+      convert: true,
+      positive: true,
+      integer: true,
+    },
+    pageSize: {
+      type: "number",
+      convert: true,
+      positive: true,
+      integer: true,
+      max: 1000,
+    },
   },
 };
